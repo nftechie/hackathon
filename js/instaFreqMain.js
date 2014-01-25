@@ -12,7 +12,7 @@ $(document).ready(function(){
 
 	var filtersArray = new Array();
 	var filtersData = new Array();
-
+	var mainDataArray = new Array();
 	var nextData;
 
     //check if plot needs to be redrawn
@@ -38,41 +38,17 @@ $(document).ready(function(){
 	        success: function(d){
 
 	        	console.log(d);
-
-	        	for (var i = 0; i < d.data.length; i++){
-	        		filtersArray.push(d.data[i].filter);
-	        	}
-
-	        	var found = false;
-
-	        	for (var i = 0; i < filtersArray.length; i++){
-
-	        		found = false;
-	        		for (var j = 0; j < filtersData.length; j++){
-
-	        			if (filtersArray[i] == filtersData[j].filter){
-	        				filtersData[j].count++;
-	        				found = true;
-	        				break;
-	        			}
-	        		}
-
-	        		if (!found){
-	        			var tmpObj = new Object();
-	        			if (filtersArray[i] != null){
-	        				tmpObj.filter = filtersArray[i];
-	        				tmpObj.count = 1;
-	        				filtersData.push(tmpObj);
-	        			}	
-	        		}
-	        	}
-
+				for(var i=0; i<d.data.length;i++){
+	        		mainDataArray.push(d.data[i]);
+				}
+	        	
 	        	nextData = d.pagination.next_url;
 
 	        	console.log(nextData);
 
 	        	if (nextData == null){
-	        		createPieChart();
+	        		startParsingData();
+	        		//createPieChart();
 	        	} else {
 	        		getMoreData(d.pagination.next_url);
 	        	}
@@ -117,9 +93,14 @@ $(document).ready(function(){
 			dataType: "jsonp",
 			success: function(d){
 				console.log(d);
+				for(var i=0; i<d.data.length;i++){
+	        		mainDataArray.push(d.data[i]);
+				}
 
 				if (d.pagination.next_url == null){
-					createPieChart();
+	        		startParsingData();
+
+	        		//createPieChart();
 				} else {
 					getMoreData(d.pagination.next_url);
 				}
@@ -128,7 +109,42 @@ $(document).ready(function(){
 		});
     }
 
+    function startParsingData(){
+    		createPieChart();
+    }
+	        		
     function createPieChart(){
+		console.log(mainDataArray);
+    	for (var i = 0; i < mainDataArray.length; i++){
+	        		filtersArray.push(mainDataArray[i].filter);
+	        	}
+
+	        	var found = false;
+
+	        	for (var i = 0; i < filtersArray.length; i++){
+
+	        		found = false;
+	        		for (var j = 0; j < filtersData.length; j++){
+
+	        			if (filtersArray[i] == filtersData[j].filter){
+	        				filtersData[j].count++;
+	        				found = true;
+	        				break;
+	        			}
+	        		}
+
+	        		if (!found){
+	        			var tmpObj = new Object();
+	        			if (filtersArray[i] != null){
+	        				tmpObj.filter = filtersArray[i];
+	        				tmpObj.count = 1;
+	        				filtersData.push(tmpObj);
+	        			}	
+	        		}
+	        	}
+
+
+
     	var width = 960,
 	    height = 500,
 	    radius = Math.min(width, height) / 2;
