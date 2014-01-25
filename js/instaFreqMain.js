@@ -19,6 +19,22 @@ $(document).ready(function(){
 	var mainDataArray = new Array();
 	var nextData;
 
+	var userID, accessToken;
+
+	accessToken = document.URL.split("access_token=")[1];
+
+	if (accessToken == null){
+		window.location.replace("https://instagram.com/oauth/authorize/?client_id=23ab74f41107450babe10864acf7c0cb&redirect_uri=http://localhost:8000/index.html&response_type=token");
+	} else {
+		$.ajax({
+			url: "https://api.instagram.com/v1/users/self/?access_token=" + accessToken,
+			dataType: "jsonp",
+			success: function(d){
+				userID = d.data.id;
+			}
+		});
+	}
+
     //check if plot needs to be redrawn
 	function checkResize(){
 	    var w = jQuery("#instaFreqContainer").width();
@@ -33,10 +49,12 @@ $(document).ready(function(){
 
 	function getNewImageData(queriesArray, nextData){
 
+		console.log(accessToken);
+
 		var feed = new Instafeed({
 	        get: 'user',
-	        userId: 18305590,
-	        accessToken: '18305590.467ede5.0c93edd3ea2d46d98458c96b4e6687cb',
+	        userId: parseInt(userID),
+	        accessToken: accessToken,
 	        limit: '60',
 	        mock: 'true',
 	        success: function(d){
@@ -103,11 +121,12 @@ $(document).ready(function(){
 
     function startParsingData(){
     	console.log(mainDataArray);
-    	
+
     	whoLikesMyPhotos();	
     	createPieChart();
 		hashTagAnalyzer();
 		photosVsVideos();
+		createBarGraph();
     }
 
     function whoLikesMyPhotos(){
@@ -166,6 +185,8 @@ $(document).ready(function(){
     	}
 
     	console.log("You have " + likeCounter + " total likes and " + commentCounter + " total comments!");
+    	console.log("Your average like per photo is " + likeCounter / mainDataArray.length + " likes!");
+    	console.log("Your average comment per photo is " + commentCounter / mainDataArray.length + " comments!");
     	console.log(friendsWhoLikeMyPhotos.length + " total people have liked your photos!");
     	console.log(friendsWhoCommentOnMyPhotos.length + " total people have commented your photos!");	
     }
@@ -211,6 +232,8 @@ $(document).ready(function(){
     	console.log(longestHashTag);
     	console.log(longestHashTagLength);
     	console.log(hashTagData);
+
+    	console.log("Your average number of hash tags per photo is " + hashTagData.length / mainDataArray.length + " hash tags!");
     }
 
     function photosVsVideos(){
@@ -323,27 +346,16 @@ $(document).ready(function(){
 		      .text(function(d) { return d.data.filter; });
     }
 
-    //this function plots data received from twitter api
-    function plotData(){
-    	$("#middleContainer").empty();
+    function createBarGraph(){
+    	var margin = {top: 20, right: 20, bottom: 30, left: 40},
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
 
-		var plotWidth = parseInt($("#instaFreqWrapper #middleContainer").css("width"));
-		var plotHeight = parseInt($("#instaFreqWrapper #middleContainer").css("height"));
-
-		var margin = {top: 20, right: 80, bottom: 30, left: 50},
-	    width = plotWidth - margin.right - margin.left - 20,
-	    height = plotHeight - margin.top - margin.bottom - 20;
-
-	    plottingData.push([new Date(), storedData.length]);
-	    storedData.length = 0;
-
-		var x = d3.time.scale()
-		    .range([0, width]);
+		var x = d3.scale.ordinal()
+		    .rangeRoundBands([0, width], .1);
 
 		var y = d3.scale.linear()
 		    .range([height, 0]);
-
-		var color = d3.scale.category10();
 
 		var xAxis = d3.svg.axis()
 		    .scale(x)
@@ -351,34 +363,21 @@ $(document).ready(function(){
 
 		var yAxis = d3.svg.axis()
 		    .scale(y)
-		    .orient("left");
-
-		var line = d3.svg.line()
-		    .interpolate("basis")
-		    .x(function(d) { return x(d.date); })
-		    .y(function(d) { return y(d.frequency); });
+		    .orient("left")
+		    .ticks(10, "%");
 
 		var svg = d3.select("#middleContainer").append("svg")
 		    .attr("width", width + margin.left + margin.right)
 		    .attr("height", height + margin.top + margin.bottom)
 		  .append("g")
 		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		  
 
-		var data = plottingData.map(function(d) {
-		      return {
-		         date: d[0],
-		         frequency: d[1]
-		      };
-		      
-		  });
-		        
+			data = hashTagData; 
 
+		  x.domain(data.map(function(d) { return d.tag; }));
+		  y.domain([0, d3.max(data, function(d) { return d.count; })]);
 
-		  x.domain(d3.extent(data, function(d) { return d.date; }));
-		  y.domain(d3.extent(data, function(d) { return d.frequency; }));
-
-				  svg.append("g")
+		  svg.append("g")
 		      .attr("class", "x axis")
 		      .attr("transform", "translate(0," + height + ")")
 		      .call(xAxis);
@@ -393,12 +392,16 @@ $(document).ready(function(){
 		      .style("text-anchor", "end")
 		      .text("Frequency");
 
-		  svg.append("path")
-		      .datum(data)
-		      .attr("class", "line")
-		      .attr("d", line);
-	
-	}
+		  svg.selectAll(".bar")
+		      .data(data)
+		    .enter().append("rect")
+		      .attr("class", "bar")
+		      .attr("x", function(d) { return x(d.tag); })
+		      .attr("width", x.rangeBand())
+		      .attr("y", function(d) { return y(d.count); })
+		      .attr("height", function(d) { return height - y(d.count); });
+
+    }
 
 	$("#instaFreqWrapper #submitButton").click(function(){
 
