@@ -56,23 +56,11 @@ $(document).ready(function(){
 	        	} else {
 	        		getMoreData(d.pagination.next_url);
 	        	}
-	        	
-	        	
 
-	        	// createPieChart();
-
-	        	// if (initialRequest){
-	        	// 	storedData.length = 0;
-	        	// 	initialRequest = false;
-	        	// }
 	        }
 	    });
 
 		feed.run();
-
-	 //    setInterval(function(){
-		// 	feed.run();
-		// }, 1000);
 
 		setInterval(function(){
 			//plotData();
