@@ -20,6 +20,10 @@ $(document).ready(function(){
 	var totalNumLikes = 0;
 	var totalNumComments = 0;
 	var nextData;
+	var topLiker = "";
+	var topLikerCount = 0;
+	var favoriteFilter = "";
+	var favoriteFilterCount = 0;
 
 	var userID, accessToken;
 
@@ -196,6 +200,20 @@ $(document).ready(function(){
 
     	totalNumLikes = likeCounter;
     	totalNumComments = commentCounter;
+
+
+    	var currMax = 0;
+    	var currPerson = "";
+    	for (var i = 0; i < friendsWhoLikeMyPhotos.length; i++){
+    		if (currMax < friendsWhoLikeMyPhotos[i].count){
+    			currMax = friendsWhoLikeMyPhotos[i].count;
+    			currPerson = friendsWhoLikeMyPhotos[i].friend;
+    		}
+    	}
+
+    	topLiker = currPerson;
+    	topLikerCount = currMax;
+
     }
 
     function hashTagAnalyzer(){
@@ -279,33 +297,44 @@ $(document).ready(function(){
 
     function createPieChart(){
     	for (var i = 0; i < mainDataArray.length; i++){
-	        		filtersArray.push(mainDataArray[i].filter);
-	        	}
+    		filtersArray.push(mainDataArray[i].filter);
+    	}
 
-	        	var found = false;
+    	var found = false;
 
-	        	for (var i = 0; i < filtersArray.length; i++){
+    	for (var i = 0; i < filtersArray.length; i++){
 
-	        		found = false;
-	        		for (var j = 0; j < filtersData.length; j++){
+    		found = false;
+    		for (var j = 0; j < filtersData.length; j++){
 
-	        			if (filtersArray[i] == filtersData[j].filter){
-	        				filtersData[j].count++;
-	        				found = true;
-	        				break;
-	        			}
-	        		}
+    			if (filtersArray[i] == filtersData[j].filter){
+    				filtersData[j].count++;
+    				found = true;
+    				break;
+    			}
+    		}
 
-	        		if (!found){
-	        			var tmpObj = new Object();
-	        			if (filtersArray[i] != null){
-	        				tmpObj.filter = filtersArray[i];
-	        				tmpObj.count = 1;
-	        				filtersData.push(tmpObj);
-	        			}	
-	        		}
-	        	}
+    		if (!found){
+    			var tmpObj = new Object();
+    			if (filtersArray[i] != null){
+    				tmpObj.filter = filtersArray[i];
+    				tmpObj.count = 1;
+    				filtersData.push(tmpObj);
+    			}	
+    		}
+    	}
 
+    	var currMax = 0;
+    	var currFilter = "";
+    	for (var i = 0; i < filtersData.length; i++){
+    		if (currMax < filtersData[i].count){
+    			currMax = filtersData[i].count;
+    			currFilter = filtersData[i].filter;
+    		}
+    	}
+
+    	favoriteFilter = currFilter;
+    	favoriteFilterCount = currMax;
 
 
     	var width = 560,
@@ -413,6 +442,8 @@ $(document).ready(function(){
     function populateHTML(){
     	$("#totalLikes").html(totalNumLikes);
     	$("#totalComments").html(totalNumComments);
+    	$("#mostLikesFrom").html(topLiker + " - " + topLikerCount);
+    	$("#favoriteFilter").html(favoriteFilter + " - " + favoriteFilterCount);
     }
 
 	$("#instaFreqWrapper #submitButton").click(function(){

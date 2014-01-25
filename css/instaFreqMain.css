@@ -1,10 +1,16 @@
 body#instaFreqBody{
 	/background:url(../images/background.png);
+	background:url(../images/ricepaper_v3.png);
 	opacity:1.0;
 }
 
 body#instaFreqBody h3{
 	margin:0;
+}
+
+.factLabel{
+	width:200px;
+	float:left;
 }
 
 #instaFreqContainer, #howToUseContainer. #teamContainer{
