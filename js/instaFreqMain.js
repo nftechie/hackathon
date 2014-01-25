@@ -17,6 +17,8 @@ $(document).ready(function(){
    	var longestHashTag = "";
     var longestHashTagLength = 0;
 	var mainDataArray = new Array();
+	var totalNumLikes = 0;
+	var totalNumComments = 0;
 	var nextData;
 
 	var userID, accessToken;
@@ -127,6 +129,8 @@ $(document).ready(function(){
 		hashTagAnalyzer();
 		photosVsVideos();
 		createBarGraph();
+
+		populateHTML();
     }
 
     function whoLikesMyPhotos(){
@@ -189,6 +193,9 @@ $(document).ready(function(){
     	console.log("Your average comment per photo is " + commentCounter / mainDataArray.length + " comments!");
     	console.log(friendsWhoLikeMyPhotos.length + " total people have liked your photos!");
     	console.log(friendsWhoCommentOnMyPhotos.length + " total people have commented your photos!");	
+
+    	totalNumLikes = likeCounter;
+    	totalNumComments = commentCounter;
     }
 
     function hashTagAnalyzer(){
@@ -301,8 +308,8 @@ $(document).ready(function(){
 
 
 
-    	var width = 960,
-	    height = 500,
+    	var width = 560,
+	    height = 400,
 	    radius = Math.min(width, height) / 2;
 
 		var color = d3.scale.ordinal()
@@ -316,7 +323,7 @@ $(document).ready(function(){
 		    .sort(null)
 		    .value(function(d) { return d.count; });
 
-		var svg = d3.select("#middleContainer").append("svg")
+		var svg = d3.select("#mainContainer").append("svg")
 		    .attr("width", width)
 		    .attr("height", height)
 		  .append("g")
@@ -366,7 +373,7 @@ $(document).ready(function(){
 		    .orient("left")
 		    .ticks(10, "%");
 
-		var svg = d3.select("#middleContainer").append("svg")
+		var svg = d3.select("#mainContainer").append("svg")
 		    .attr("width", width + margin.left + margin.right)
 		    .attr("height", height + margin.top + margin.bottom)
 		  .append("g")
@@ -403,6 +410,11 @@ $(document).ready(function(){
 
     }
 
+    function populateHTML(){
+    	$("#totalLikes").html(totalNumLikes);
+    	$("#totalComments").html(totalNumComments);
+    }
+
 	$("#instaFreqWrapper #submitButton").click(function(){
 
 		plotActive = true;
@@ -415,5 +427,11 @@ $(document).ready(function(){
 		getNewImageData(queries);
 
 	});
+
+	$("body").keypress(function(e){
+		if (e.keyCode == 13) {
+	        getNewImageData();
+		}
+    });
 
 });

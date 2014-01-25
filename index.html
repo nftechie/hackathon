@@ -7,6 +7,9 @@
 	<meta name="This application represents instagram image frequency using graphs" content="Instagram API Image Frequency Visualization">
 	<meta name="Alex Wormuth">
 
+  <link rel="stylesheet" href="foundation/css/foundation.css" />
+    <script src="foundation/js/modernizr.js"></script>
+
   <style>
 
   body {
@@ -21,142 +24,126 @@
 </head>
 
 <link href="css/instaFreqMain.css" rel="stylesheet" type="text/css" />
-<link href="bootstrap/css/bootstrap.css" rel="stylesheet" type="text/css" />
 
 <body id="instaFreqBody">
 
 
-	<!-- HEADER
-	=========================== -->
-	<div class="navbar">
-		<div class="container">	 
-			<a class="navbar-brand" href="#">InstaFreq</a>
-			<!-- <ul class="nav navbar-nav pull-right">
-				<li id="about" class="active"><a href="#">About</a></li>
-				<li id="howToUse"><a href="#">How to Use</a></li>
-				<li id="team"><a href="#">Team</a></li>
-			</ul> -->
-		</div>
-	</div> <!-- end header -->
 
+	<div class="row">
+      <div class="large-12 columns">
+        <h1><img src="images/instats.png" width="75" height="75" style="margin-top:10px; margin-right:10px; float:left;"> Instatistics</h1>
+        <span style="float:left; font-size:15px; margin-top:-5px;">#insertsloganhere</span>
+      </div>
+  </div><br style="clear:both;"><br>
+    
+    <div class="row">
+      <div class="large-8 medium-8 columns">
+        <h5>Hashtag Frequency:</h5>
+        <!-- Grid Example -->
 
-	<div class="container">
+        
+        <div id="mainContainer" class="row">
+            
+        </div>
+        
+        <hr />
+                
+        <h5>We bet you&rsquo;ll need a form somewhere:</h5>
+        <form>
+          <div class="row">
+            <div class="large-12 columns">
+              <label>Input Label</label>
+              <input type="text" placeholder="large-12.columns" />
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-4 medium-4 columns">
+              <label>Input Label</label>
+              <input type="text" placeholder="large-4.columns" />
+            </div>
+            <div class="large-4 medium-4 columns">
+              <label>Input Label</label>
+              <input type="text" placeholder="large-4.columns" />
+            </div>
+            <div class="large-4 medium-4 columns">
+              <div class="row collapse">
+                <label>Input Label</label>
+                <div class="small-9 columns">
+                  <input type="text" placeholder="small-9.columns" />
+                </div>
+                <div class="small-3 columns">
+                  <span class="postfix">.com</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <label>Select Box</label>
+              <select>
+                <option value="husker">Husker</option>
+                <option value="starbuck">Starbuck</option>
+                <option value="hotdog">Hot Dog</option>
+                <option value="apollo">Apollo</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-6 medium-6 columns">
+              <label>Choose Your Favorite</label>
+              <input type="radio" name="pokemon" value="Red" id="pokemonRed"><label for="pokemonRed">Radio 1</label>
+              <input type="radio" name="pokemon" value="Blue" id="pokemonBlue"><label for="pokemonBlue">Radio 2</label>
+            </div>
+            <div class="large-6 medium-6 columns">
+              <label>Check these out</label>
+              <input id="checkbox1" type="checkbox"><label for="checkbox1">Checkbox 1</label>
+              <input id="checkbox2" type="checkbox"><label for="checkbox2">Checkbox 2</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="large-12 columns">
+              <label>Textarea Label</label>
+              <textarea placeholder="small-12.columns"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>     
 
-		<!-- APPLICATION
-		=========================== -->
-		<div id="instaFreqContainer" class="mainContent">
-			<div id="instaFreqWrapper">
-				<div id="topBar">
-					<form class="form-inline">
-						<fieldset>
-							<input class="queryInput form-control" type="text">
-							<!-- <input class="queryInput form-control" type="text">
-							<input class="queryInput form-control" type="text">
-							<input class="queryInput form-control" type="text"> -->
-							<a id="submitButton" class="btn btn-primary">Submit</a>
-						</fieldset>
-					</form>
-				</div>
-				<div id="middleContainer">
-					
-				</div>
-				<div id="bottomBar">
-					
-				</div>
-			</div>
-		</div> <!-- end application -->
+      <div class="large-4 medium-4 columns">
+        <h5>Fun Stats:</h5><br>
+        <p>
+          Days since first post: <span id="daysSinceFirstPost"></span><br><br>
+          Days since last post: <span id="daysSinceLastPost"></span><br><br>
+          Favorite filter: <span id="totalLikes"></span><br><br>
+          Total likes: <span id="totalLikes"></span><br><br>
+          Total comments: <span id="totalComments"></span><br><br>
+          Days since first post: <span id="totalLikes"></span><br><br>
+          Post rate: <span id="totalLikes"></span><br><br>
+          Most likes from: <span id="topStalker"></span>
+        </p>           
+        <div class="panel">
+          <h5>So many components, girl!</h5>
+          <p>A whole kitchen sink of goodies comes with Foundation. Checkout the docs to see them all, along with details on making them your own.</p>
+          <a href="http://foundation.zurb.com/docs/" class="small button">Go to Foundation Docs</a>          
+        </div>
+      </div>
+    </div>
+
 
 		<div id="instafeed"></div>
 
 
-		<!-- HOW TO USE
-		=========================== -->
-		<div id="howToUseContainer" class="mainContent">
-			<div id="topBar">
-				<h3>How to Use</h3>
-			</div>
-			<div id="middleContainer">
-				
-			</div>
-			<div id="bottomBar">
-				
-			</div>
-		</div> <!-- end how to use -->
-<a href="https://instagram.com/oauth/authorize/?client_id=23ab74f41107450babe10864acf7c0cb&redirect_uri=http://localhost:8000/index.html&response_type=token">Click Me</a>
-
-
-		<!-- TEAM
-		=========================== -->
-		<div id="teamContainer" class="mainContent">
-			<div id="topBar">
-				<h3>Team</h3>
-			</div>
-			<div id="middleContainer">
-				
-			</div>
-			<div id="bottomBar">
-				
-			</div>
-		</div> <!-- end team -->
-
-	</div> <!-- end container -->
-
-
 	<!-- JAVASCRIPT -->
 	<script src="js/jquery.min.js"></script>
-	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script src="js/d3.min.js"></script>
 	<script type="text/javascript" src="js/instafeed.min.js"></script>
   <script src="http://d3js.org/d3.v3.min.js"></script>
 
-<script>
-
-var width = 960,
-    height = 500,
-    radius = Math.min(width, height) / 2;
-
-var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-var arc = d3.svg.arc()
-    .outerRadius(radius - 10)
-    .innerRadius(0);
-
-var pie = d3.layout.pie()
-    .sort(null)
-    .value(function(d) { return d.population; });
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height)
-  .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-    data = filteredData;
-
-  data.forEach(function(d) {
-    d.population = +d.population;
-  });
-
-  var g = svg.selectAll(".arc")
-      .data(pie(data))
-    .enter().append("g")
-      .attr("class", "arc");
-
-  g.append("path")
-      .attr("d", arc)
-      .style("fill", function(d) { return color(d.data.age); });
-
-  g.append("text")
-      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-      .attr("dy", ".35em")
-      .style("text-anchor", "middle")
-      .text(function(d) { return d.data.age; });
-
-
-
-</script>
-
+  <script src="foundation/js/jquery.js"></script>
+    <script src="foundation/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+    </script>
 	<script src="js/instaFreqMain.js"></script>
 
 </body>
