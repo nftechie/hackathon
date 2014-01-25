@@ -13,6 +13,8 @@ $(document).ready(function(){
 	var filtersArray = new Array();
 	var filtersData = new Array();
 
+	var nextData;
+
     //check if plot needs to be redrawn
 	function checkResize(){
 	    var w = jQuery("#instaFreqContainer").width();
@@ -25,42 +27,21 @@ $(document).ready(function(){
 	    }
 	}
 
-	function getNewImageData(queriesArray){
+	function getNewImageData(queriesArray, nextData){
+
 		var feed = new Instafeed({
 	        get: 'user',
 	        userId: 18305590,
 	        accessToken: '18305590.467ede5.0c93edd3ea2d46d98458c96b4e6687cb',
+	        limit: '60',
 	        mock: 'true',
 	        success: function(d){
 
-	        	// newData = false;
-	        	for (var i = 0; i < d.data.length; i++){
-	        		date = new Date(d.data[i].created_time * 1000);
-	        		if (currLatestTime < d.data[i].created_time){
-	        			storedData.push(d.data[i].created_time);
-	        			//date = new Date(d.data[i].created_time * 1000);
-	        			console.log(date);
-
-	        			if (d.data[i].location != null){
-	        				storedLocations.push(d.data[i].location);
-	        			}
-
-	        			// currNewPosts++;
-	        			// newData = true;
-	        		} else {
-	        			break;
-	        		}
-	        	}
-	        	// currLatestTime = new Date(d.data[0].created_time * 1000);
-	        	currLatestTime = d.data[0].created_time;
+	        	console.log(d);
 
 	        	for (var i = 0; i < d.data.length; i++){
 	        		filtersArray.push(d.data[i].filter);
 	        	}
-
-	        	console.log(d);
-
-	        	console.log(filtersArray);
 
 	        	var found = false;
 
@@ -79,75 +60,31 @@ $(document).ready(function(){
 	        		if (!found){
 	        			var tmpObj = new Object();
 	        			if (filtersArray[i] != null){
-	        				console.log(filtersArray[i]);
 	        				tmpObj.filter = filtersArray[i];
 	        				tmpObj.count = 1;
 	        				filtersData.push(tmpObj);
-
-	        				// console.log(filtersData);
-	        			}
-	        			
-	        			
+	        			}	
 	        		}
-	        		
 	        	}
 
-	        	console.log(filtersData);
+	        	nextData = d.pagination.next_url;
 
-	        	var width = 960,
-			    height = 500,
-			    radius = Math.min(width, height) / 2;
+	        	console.log(nextData);
 
-			var color = d3.scale.ordinal()
-			    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-			var arc = d3.svg.arc()
-			    .outerRadius(radius - 10)
-			    .innerRadius(0);
-
-			var pie = d3.layout.pie()
-			    .sort(null)
-			    .value(function(d) { return d.count; });
-
-			var svg = d3.select("#middleContainer").append("svg")
-			    .attr("width", width)
-			    .attr("height", height)
-			  .append("g")
-			    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-			 data = filtersData;
-
-			  data.forEach(function(d) {
-			    d.count = +d.count;
-			  });
-
-			  console.log(data);
-
-			  var g = svg.selectAll(".arc")
-			      .data(pie(data))
-			    .enter().append("g")
-			      .attr("class", "arc");
-
-		      console.log(g);
-
-			  g.append("path")
-			      .attr("d", arc)
-			      .style("fill", function(d) { return color(d.data.filter); });
-
-			  g.append("text")
-			      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-			      .attr("dy", ".35em")
-			      .style("text-anchor", "middle")
-			      .text(function(d) { return d.data.filter; });
-
-	
-
-	        	console.log(filtersData);
-
-	        	if (initialRequest){
-	        		storedData.length = 0;
-	        		initialRequest = false;
+	        	if (nextData == null){
+	        		createPieChart();
+	        	} else {
+	        		getMoreData(d.pagination.next_url);
 	        	}
+	        	
+	        	
+
+	        	// createPieChart();
+
+	        	// if (initialRequest){
+	        	// 	storedData.length = 0;
+	        	// 	initialRequest = false;
+	        	// }
 	        }
 	    });
 
@@ -173,8 +110,69 @@ $(document).ready(function(){
 
     var plotActive = false;
 
+    function getMoreData(nextData){
+    	console.log(nextData);
+    	$.ajax({
+			url: nextData,
+			dataType: "jsonp",
+			success: function(d){
+				console.log(d);
 
+				if (d.pagination.next_url == null){
+					createPieChart();
+				} else {
+					getMoreData(d.pagination.next_url);
+				}
+				
+			}
+		});
+    }
 
+    function createPieChart(){
+    	var width = 960,
+	    height = 500,
+	    radius = Math.min(width, height) / 2;
+
+		var color = d3.scale.ordinal()
+		    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+		var arc = d3.svg.arc()
+		    .outerRadius(radius - 10)
+		    .innerRadius(0);
+
+		var pie = d3.layout.pie()
+		    .sort(null)
+		    .value(function(d) { return d.count; });
+
+		var svg = d3.select("#middleContainer").append("svg")
+		    .attr("width", width)
+		    .attr("height", height)
+		  .append("g")
+		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+		 data = filtersData;
+
+		  data.forEach(function(d) {
+		    d.count = +d.count;
+		  });
+
+		  console.log(data);
+
+		  var g = svg.selectAll(".arc")
+		      .data(pie(data))
+		    .enter().append("g")
+		      .attr("class", "arc");
+
+		  g.append("path")
+		      .attr("d", arc)
+		      .style("fill", function(d) { return color(d.data.filter); });
+
+		  g.append("text")
+		      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+		      .attr("dy", ".35em")
+		      .style("text-anchor", "middle")
+		      .text(function(d) { return d.data.filter; });
+    }
 
     //this function plots data received from twitter api
     function plotData(){
