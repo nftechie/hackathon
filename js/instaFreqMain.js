@@ -12,6 +12,10 @@ $(document).ready(function(){
 
 	var filtersArray = new Array();
 	var filtersData = new Array();
+	var picVsVidData = new Array();
+	var hashTagData = new Array();
+   	var longestHashTag = "";
+    var longestHashTagLength = 0;
 	var mainDataArray = new Array();
 	var nextData;
 
@@ -99,8 +103,11 @@ $(document).ready(function(){
 
     function startParsingData(){
     	console.log(mainDataArray);
+    	
+    	whoLikesMyPhotos();	
     	createPieChart();
-    	whoLikesMyPhotos();
+		hashTagAnalyzer();
+		photosVsVideos();
     }
 
     function whoLikesMyPhotos(){
@@ -160,9 +167,86 @@ $(document).ready(function(){
 
     	console.log("You have " + likeCounter + " total likes and " + commentCounter + " total comments!");
     	console.log(friendsWhoLikeMyPhotos.length + " total people have liked your photos!");
-    	console.log(friendsWhoCommentOnMyPhotos.length + " total people have commented your photos!");
+    	console.log(friendsWhoCommentOnMyPhotos.length + " total people have commented your photos!");	
     }
-	        		
+
+    function hashTagAnalyzer(){
+    	var hashTagArray = new Array();
+
+    	for (var i = 0; i < mainDataArray.length; i++){
+    			for(var j = 0; j < mainDataArray[i].tags.length; j++){
+	        		hashTagArray.push(mainDataArray[i].tags[j]);
+
+	        		if(mainDataArray[i].tags[j].length > longestHashTagLength){
+	        			longestHashTag = mainDataArray[i].tags[j];
+	        			longestHashTagLength = mainDataArray[i].tags[j].length;
+	        		}
+
+    			}
+	    }
+
+    	var found = false;
+
+    	for (var i = 0; i < hashTagArray.length; i++){
+
+    		found = false;
+    		for (var j = 0; j < hashTagData.length; j++){
+
+    			if (hashTagArray[i] == hashTagData[j].tag){
+    				hashTagData[j].count++;
+    				found = true;
+    				break;
+    			}
+    		}
+
+    		if (!found){
+    			var tmpObj = new Object();
+    			if (hashTagArray[i] != null){
+    				tmpObj.tag = hashTagArray[i];
+    				tmpObj.count = 1;
+    				hashTagData.push(tmpObj);
+    			}	
+    		}
+    	}
+    	console.log(longestHashTag);
+    	console.log(longestHashTagLength);
+    	console.log(hashTagData);
+    }
+
+    function photosVsVideos(){
+    	picVsVidArray = new Array();
+    	videoCount = 0;
+    	imgCount = 0;
+    	for (var i = 0; i < mainDataArray.length; i++){
+	        picVsVidArray.push(mainDataArray[i].type);
+	    }
+
+    	var found = false;
+
+    	for (var i = 0; i < picVsVidArray.length; i++){
+
+    		found = false;
+    		for (var j = 0; j < picVsVidData.length; j++){
+
+    			if (picVsVidArray[i] == picVsVidData[j].type){
+    				picVsVidData[j].count++;
+    				found = true;
+    				break;
+    			}
+    		}
+
+    		if (!found){
+    			var tmpObj = new Object();
+    			if (picVsVidArray[i] != null){
+    				tmpObj.type = picVsVidArray[i];
+    				tmpObj.count = 1;
+    				picVsVidData.push(tmpObj);
+    			}	
+    		}
+    	}
+    	console.log(picVsVidData);
+    }
+
     function createPieChart(){
     	for (var i = 0; i < mainDataArray.length; i++){
 	        		filtersArray.push(mainDataArray[i].filter);
