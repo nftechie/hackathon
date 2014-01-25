@@ -98,11 +98,72 @@ $(document).ready(function(){
     }
 
     function startParsingData(){
-    		createPieChart();
+    	console.log(mainDataArray);
+    	createPieChart();
+    	whoLikesMyPhotos();
+    }
+
+    function whoLikesMyPhotos(){
+    	var likeCounter = 0;
+    	var commentCounter = 0;
+    	var friendsWhoLikeMyPhotos = new Array();
+    	var friendsWhoCommentOnMyPhotos = new Array();
+    	var tmpObj = new Object();
+    	var foundLike = false;
+    	var foundComment = false;
+
+    	for (var i = 0; i < mainDataArray.length; i++){
+    		likeCounter = likeCounter + mainDataArray[i].likes.count;
+
+    		for (var j = 0; j < mainDataArray[i].likes.data.length; j++){
+    			foundLike = false;
+
+    			for (var k = 0; k < friendsWhoLikeMyPhotos.length; k++){
+    				if (friendsWhoLikeMyPhotos[k].friend == mainDataArray[i].likes.data[j].username){
+    					friendsWhoLikeMyPhotos[k].count++;
+    					foundLike = true;
+    					break;
+    				}
+    			}
+
+    			if (!foundLike && mainDataArray[i].likes.data.length > 0){
+    				tmpObj = new Object();
+    				tmpObj.friend = mainDataArray[i].likes.data[j].username;
+    				tmpObj.count = 0;
+    				friendsWhoLikeMyPhotos.push(tmpObj);
+    			}
+    		}
+    	}
+
+    	for (var i = 0; i < mainDataArray.length; i++){
+    		commentCounter = commentCounter + mainDataArray[i].comments.count;
+
+    		for (var j = 0; j < mainDataArray[i].comments.data.length; j++){
+    			foundComment = false;
+
+		    	for (var k = 0; k < friendsWhoCommentOnMyPhotos.length; k++){
+		    				if (friendsWhoCommentOnMyPhotos[k].friend == mainDataArray[i].comments.data[j].from.username){
+		    					friendsWhoCommentOnMyPhotos[k].count++;
+		    					foundComment = true;
+		    					break;
+		    				}
+		    			}
+
+		    	if (!foundComment && mainDataArray[i].comments.data.length > 0){
+		    				tmpObj = new Object();
+		    				tmpObj.friend = mainDataArray[i].comments.data[j].from.username;
+		    				tmpObj.count = 0;
+		    				friendsWhoCommentOnMyPhotos.push(tmpObj);
+    			}
+    		}
+    	}
+
+    	console.log("You have " + likeCounter + " total likes and " + commentCounter + " total comments!");
+    	console.log(friendsWhoLikeMyPhotos.length + " total people have liked your photos!");
+    	console.log(friendsWhoCommentOnMyPhotos.length + " total people have commented your photos!");
     }
 	        		
     function createPieChart(){
-		console.log(mainDataArray);
     	for (var i = 0; i < mainDataArray.length; i++){
 	        		filtersArray.push(mainDataArray[i].filter);
 	        	}
