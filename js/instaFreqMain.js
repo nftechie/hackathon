@@ -129,6 +129,8 @@ $(document).ready(function(){
 		hashTagAnalyzer();
 		photosVsVideos();
 		createBarGraph();
+		
+	generateTimingInfo();
 
 		populateHTML();
     }
@@ -351,6 +353,10 @@ $(document).ready(function(){
 		      .attr("dy", ".35em")
 		      .style("text-anchor", "middle")
 		      .text(function(d) { return d.data.filter; });
+    }
+    
+    function generateTimingInfo(){
+	console.log(mainDataArray);
     }
 
     function createBarGraph(){
