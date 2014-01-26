@@ -494,7 +494,7 @@ var svg = d3.select("#mainContainer").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    .attr("transform", "translate(" + 0 + "," + margin.top + ")");
 
 svg.append("rect")
     .attr("class", "background")
