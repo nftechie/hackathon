@@ -20,6 +20,8 @@ $(document).ready(function(){
 	var totalNumLikes = 0;
 	var totalNumComments = 0;
 	var nextData;
+	var firstDay;
+	var recentDay;
 
 	var userID, accessToken;
 
@@ -356,7 +358,17 @@ $(document).ready(function(){
     }
     
     function generateTimingInfo(){
-	console.log(mainDataArray);
+	firstDay = mainDataArray[mainDataArray.length - 1].created_time; // NEED TO CONVERT TO DATE!
+	var currentDate = (new Date).getTime()/1000;
+	console.log(firstDay);//seconds
+	var difference = currentDate - firstDay;
+	console.log(currentDate);
+	console.log(difference);
+	var d = difference/115741;
+	console.log("first day to current day : " + d);
+	var days = Math.round(d);
+	$("#daysSinceFirstPost").html(days);
+	
     }
 
     function createBarGraph(){
