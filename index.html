@@ -1,163 +1,242 @@
 <!doctype html>
 <html lang="en">
 
-<head>
-	<meta charset="utf-8">
-	<title>InstaFreq</title>
-	<meta name="This application represents instagram image frequency using graphs" content="Instagram API Image Frequency Visualization">
-	<meta name="Alex Wormuth">
+  <head>
+  	<meta charset="utf-8">
+  	<title>Instatistics</title>
+  	<meta name="This application displays instagram statistics for a given user using d3" content="Instagram API User Statistcs Visualization">
+  	<meta name="Alex Wormuth">
 
-  <link rel="stylesheet" href="foundation/css/foundation.css" />
+    <link rel="stylesheet" href="foundation/css/foundation.css" />
     <script src="foundation/js/modernizr.js"></script>
 
-  <style>
+    <style>
 
-  body {
-    font: 10px sans-serif;
-  }
+      body {
+        font: 12px sans-serif;
+      }
+      svg#mainGear {
+        position: fixed;
+        top: 46%;
+        left: 46%;
+      }
+      #loadingContainer {
+        position: fixed;
+        top: 40%;
+        left: 47%;
+      }
+      path {
+        fill-rule: evenodd;
+        stroke: #333;
+        stroke-width: 2px;
+      }
+      .sun path {
+        fill: #497BBC;
+      }
+      .planet path {
+        fill: #FCC734;
+      }
+      .planet path {
+        fill: #E63952;
+      }
+      .planet path {
+        fill: #74BE8F;
+      }
+      .annulus path {
+        fill: #497BBC;
+      }
+      circle {
+        fill: none;
+        pointer-events: all;
+      }
+      rect.background{
+        fill:rgba(0, 0, 0, 0.0);
+      }
+      .arc path {
+        stroke: #fff;
+      }
+      .axis {
+      shape-rendering: crispEdges;
+      }
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+      }
 
-  rect.background{
-    fill:white;
-  }
+    </style>
 
-  .arc path {
-    stroke: #fff;
-  }
-  .axis {
-  shape-rendering: crispEdges;
-  }
+  </head>
 
-  .axis path,
-  .axis line {
-    fill: none;
-    stroke: #000;
-  }
+  <link href="css/instatisticsMain.css" rel="stylesheet" type="text/css" />
 
-</style>
-</head>
+  <body id="instatisticsBody">
 
-<link href="css/instaFreqMain.css" rel="stylesheet" type="text/css" />
-
-<body id="instaFreqBody">
-
-
-
-	<div class="row">
-      <div class="large-12 columns">
-        <h1><img src="images/instats.png" width="75" height="75" style="margin-top:10px; margin-right:10px; float:left;"> Instatistics</h1>
-        <span style="float:left; font-size:15px; margin-top:-5px;">#insertsloganhere</span>
-      </div>
-  </div><br style="clear:both;"><br>
-    
-    <div class="row">
-      <div class="large-8 medium-8 columns">
-        <h5>General Info:</h5>
-        <!-- Grid Example -->
-
-        
-        <div id="mainContainer" class="row">
-            
+  	<div hidden id="topBar" class="row">
+        <div class="large-12 columns">
+          <h1><img src="images/instats.png" width="75" height="75" style="margin-top:10px; margin-right:10px; float:left;"> Instatistics</h1>
+          <span style="float:left; font-size:15px; margin-top:-5px;">#hacktech2014</span>
         </div>
-        
-        <!-- <hr />
-                
-        <h5>We bet you&rsquo;ll need a form somewhere:</h5>
-        <form>
-          <div class="row">
-            <div class="large-12 columns">
-              <label>Input Label</label>
-              <input type="text" placeholder="large-12.columns" />
-            </div>
-          </div>
-          <div class="row">
-            <div class="large-4 medium-4 columns">
-              <label>Input Label</label>
-              <input type="text" placeholder="large-4.columns" />
-            </div>
-            <div class="large-4 medium-4 columns">
-              <label>Input Label</label>
-              <input type="text" placeholder="large-4.columns" />
-            </div>
-            <div class="large-4 medium-4 columns">
-              <div class="row collapse">
-                <label>Input Label</label>
-                <div class="small-9 columns">
-                  <input type="text" placeholder="small-9.columns" />
-                </div>
-                <div class="small-3 columns">
-                  <span class="postfix">.com</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="large-12 columns">
-              <label>Select Box</label>
-              <select>
-                <option value="husker">Husker</option>
-                <option value="starbuck">Starbuck</option>
-                <option value="hotdog">Hot Dog</option>
-                <option value="apollo">Apollo</option>
-              </select>
-            </div>
-          </div>
-          <div class="row">
-            <div class="large-6 medium-6 columns">
-              <label>Choose Your Favorite</label>
-              <input type="radio" name="pokemon" value="Red" id="pokemonRed"><label for="pokemonRed">Radio 1</label>
-              <input type="radio" name="pokemon" value="Blue" id="pokemonBlue"><label for="pokemonBlue">Radio 2</label>
-            </div>
-            <div class="large-6 medium-6 columns">
-              <label>Check these out</label>
-              <input id="checkbox1" type="checkbox"><label for="checkbox1">Checkbox 1</label>
-              <input id="checkbox2" type="checkbox"><label for="checkbox2">Checkbox 2</label>
-            </div>
-          </div>
-          <div class="row">
-            <div class="large-12 columns">
-              <label>Textarea Label</label>
-              <textarea placeholder="small-12.columns"></textarea>
-            </div>
-          </div>
-        </form> -->
-      </div>     
 
-      <div class="large-4 medium-4 columns">
-        <h5>Fun Stats:</h5><br>
-        <p>
-          <span class="factLabel">Days since first post:</span> <span id="daysSinceFirstPost"></span><br><br>
-          <span class="factLabel">Days since last post:</span> <span id="daysSinceLastPost"></span><br><br>
-          <span class="factLabel">Favorite filter:</span> <span id="favoriteFilter"></span><br><br>
-          <span class="factLabel">Total likes:</span> <span id="totalLikes"></span><br><br>
-          <span class="factLabel">Total comments:</span> <span id="totalComments"></span><br><br>
-          <span class="factLabel">Post rate:</span> <span id="postRate"></span><br><br>
-          <span class="factLabel">Most likes from:</span> <span id="mostLikesFrom"></span>
-        </p>           
-        <!-- <div class="panel">
-          <h5>So many components, girl!</h5>
-          <p>A whole kitchen sink of goodies comes with Foundation. Checkout the docs to see them all, along with details on making them your own.</p>
-          <a href="http://foundation.zurb.com/docs/" class="small button">Go to Foundation Docs</a>          
-        </div> -->
-      </div>
     </div>
+    <hr style="clear:both; background-color:#497BBC;"> 
 
+      <div id="loadingContainer" class="row">
+              <span style="font-size:14px;">Loading...</span>
+      </div>
+      
+      <div id="content" hidden class="row">
+        <div class="large-8 medium-8 columns">
+          <h5>General Info:</h5>
+          <!-- Grid Example -->
+   
+          <div id="mainContainer" class="row">
+              
+          </div>
+          
+        </div>     
 
-		<div id="instafeed"></div>
+        <div class="large-4 medium-4 columns">
+          <div id="profilePic" class="panel">
+                      
+          </div>
+          <h5>Fun Stats:</h5><br><br>
+          <p>
+            <span class="factLabel">Most recent post:</span> <span id="daysSinceLastPost"></span><br><br>
+            <span class="factLabel">First post:</span> <span id="daysSinceFirstPost"></span><br><br>
+            <span class="factLabel">Favorite filter:</span> <span id="favoriteFilter"></span><br><br>
+            <span class="factLabel">Total likes:</span> <span id="totalLikes"></span><br><br>
+            <span class="factLabel">Total comments:</span> <span id="totalComments"></span><br><br>
+            <span class="factLabel">Post rate:</span> <span id="postRate"></span><br><br>
+            <span class="factLabel">Most likes from:</span> <span id="mostLikesFrom"></span>
+          </p>           
+        </div>
+      </div>
 
+      <hr style="clear:both; background-color:#497BBC;"> 
 
-	<!-- JAVASCRIPT -->
-	<script src="js/jquery.min.js"></script>
-	<script src="js/d3.min.js"></script>
-	<script type="text/javascript" src="js/instafeed.min.js"></script>
-  <script src="js/d3.v3.min.js"></script>
+      <div id="content2" hidden class="row">
+        <div class="large-8 medium-8 columns">
+          <h5>Radial Display of Filters:</h5>
+          <!-- Grid Example -->
+   
+          <div id="mainContainer2" class="row">
+              
+          </div>
+          
+        </div>     
 
-  <script src="foundation/js/jquery.js"></script>
+        <div class="large-4 medium-4 columns">
+          
+        </div>
+      </div>
+
+      <hr style="clear:both; background-color:#497BBC;"> 
+
+      <div id="content3" hidden class="row">
+        <div class="large-12 medium-12 columns">
+          <h5>Most Used:</h5>
+          <!-- Grid Example -->
+   
+          <div id="mainContainer3" class="row">
+              
+          </div>
+          
+        </div>     
+      </div>
+
+      <hr style="clear:both; background-color:#497BBC;"> 
+
+      <div style="width:100%; text-align:center; font-size:16px; margin-bottom:15px;">
+        <a href="#">About</a>
+      </div>
+
+  	<div id="instafeed"></div>
+
+  	<!-- JAVASCRIPT -->
+    <script src="foundation/js/jquery.js"></script>
     <script src="foundation/js/foundation.min.js"></script>
+  	<script src="js/d3.min.js"></script>
+  	<script type="text/javascript" src="js/instafeed.min.js"></script>
+    <script src="js/d3.v3.min.js"></script>
+    
     <script>
       $(document).foundation();
     </script>
-	<script src="js/instaFreqMain.js"></script>
 
-</body>
+    <script>
+      var width = 80,
+          height = 80,
+          radius = 64,
+          x = Math.sin(2 * Math.PI / 3),
+          y = Math.cos(2 * Math.PI / 3);
+
+      var offset = 0,
+          speed = 4,
+          start = Date.now();
+
+      var svg = d3.select("#loadingContainer").append("svg")
+          .attr("width", width)
+          .attr("id", "mainGear")
+          .attr("height", height)
+        .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(.55)")
+        .append("g");
+
+      var frame = svg.append("g")
+          .datum({radius: Infinity});
+
+
+      frame.append("g")
+          .attr("class", "sun")
+          .datum({teeth: 16, radius: radius})
+        .append("path")
+          .attr("d", gear);
+
+
+
+      d3.selectAll("input[name=reference]")
+          .data([radius * 5, Infinity, -radius])
+          .on("change", function(radius1) {
+            var radius0 = frame.datum().radius, angle = (Date.now() - start) * speed;
+            frame.datum({radius: radius1});
+            svg.attr("transform", "rotate(" + (offset += angle / radius0 - angle / radius1) + ")");
+          });
+
+      d3.selectAll("input[name=speed]")
+          .on("change", function() { speed = +this.value; });
+
+      function gear(d) {
+        var n = d.teeth,
+            r2 = Math.abs(d.radius),
+            r0 = r2 - 8,
+            r1 = r2 + 8,
+            r3 = d.annulus ? (r3 = r0, r0 = r1, r1 = r3, r2 + 20) : 20,
+            da = Math.PI / n,
+            a0 = -Math.PI / 2 + (d.annulus ? Math.PI / n : 0),
+            i = -1,
+            path = ["M", r0 * Math.cos(a0), ",", r0 * Math.sin(a0)];
+        while (++i < n) path.push(
+            "A", r0, ",", r0, " 0 0,1 ", r0 * Math.cos(a0 += da), ",", r0 * Math.sin(a0),
+            "L", r2 * Math.cos(a0), ",", r2 * Math.sin(a0),
+            "L", r1 * Math.cos(a0 += da / 3), ",", r1 * Math.sin(a0),
+            "A", r1, ",", r1, " 0 0,1 ", r1 * Math.cos(a0 += da / 3), ",", r1 * Math.sin(a0),
+            "L", r2 * Math.cos(a0 += da / 3), ",", r2 * Math.sin(a0),
+            "L", r0 * Math.cos(a0), ",", r0 * Math.sin(a0));
+        path.push("M0,", -r3, "A", r3, ",", r3, " 0 0,0 0,", r3, "A", r3, ",", r3, " 0 0,0 0,", -r3, "Z");
+        return path.join("");
+      }
+
+      d3.timer(function() {
+        var angle = (Date.now() - start) * speed,
+            transform = function(d) { return "rotate(" + angle / d.radius + ")"; };
+        frame.selectAll("path").attr("transform", transform);
+         frame.attr("transform", transform); // frame of reference
+       });
+    </script>
+
+  	<script src="js/instatisticsMain.js"></script>
+
+  </body>
 
 </html>
