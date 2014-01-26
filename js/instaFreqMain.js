@@ -20,8 +20,8 @@ $(document).ready(function(){
 	var totalNumLikes = 0;
 	var totalNumComments = 0;
 	var nextData;
-	var firstDay;
-	var recentDay;
+	var firstPost;
+	var lastPost;
 
 	var userID, accessToken;
 
@@ -132,7 +132,9 @@ $(document).ready(function(){
 		photosVsVideos();
 		createBarGraph();
 		
-	generateTimingInfo();
+	generateDaysSinceFirst();
+	generateDaysSinceLast();
+	generateFrequencyOfPosts();
 
 		populateHTML();
     }
@@ -412,18 +414,53 @@ $(document).ready(function(){
 		      .text(function(d) { return d.data.filter; });
     }
     
-    function generateTimingInfo(){
-	firstDay = mainDataArray[mainDataArray.length - 1].created_time; // NEED TO CONVERT TO DATE!
+    function generateDaysSinceFirst(){
+	firstPost = mainDataArray[mainDataArray.length - 1].created_time; // NEED TO CONVERT TO DATE!
 	var currentDate = (new Date).getTime()/1000;
-	console.log(firstDay);//seconds
-	var difference = currentDate - firstDay;
-	console.log(currentDate);
-	console.log(difference);
+	//onsole.log(firstPost);//seconds
+	var difference = currentDate - firstPost;
+	//console.log(currentDate);
+	//console.log(difference);
 	var d = difference/115741;
 	console.log("first day to current day : " + d);
 	var days = Math.round(d);
 	$("#daysSinceFirstPost").html(days);
 	
+    }
+    
+    function generateDaysSinceLast() {
+	lastPost = mainDataArray[0].created_time; // NEED TO CONVERT TO DATE!
+	var currentDate = (new Date).getTime()/1000;
+	var difference = currentDate - lastPost;
+	var d = difference/115741;
+	console.log("last day to current day : " + d);
+	var days = Math.round(d);
+	$("#daysSinceLastPost").html(days);
+    }
+    
+    function generateFrequencyOfPosts() {
+	//lastPost = mainDataArray[0].created_time; // NEED TO CONVERT TO DATE!
+	// find current date
+	var currentDate = (new Date).getTime()/1000;
+	// find date 30 days ago
+	var yearAgo = currentDate - (2952000*12); // = 30 days
+	// go through array and count those less than ^
+	var inMonth = true;
+	var count = 0;
+	for(var i=0; i<mainDataArray.length; i++){
+		inYear = (mainDataArray[i].created_time > yearAgo);
+		if (inYear){
+			count++;
+		}
+		else{
+			break;
+		}
+		
+	}
+	// count / 30 days = frequency
+	console.log(count);
+	var frequency = Math.round(count/12);
+	$("#postRate").html(frequency + " per month");
     }
 
     function createBarGraph(){
